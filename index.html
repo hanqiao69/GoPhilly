@@ -4,19 +4,56 @@
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
-	<script rel="stylesheet" src="material.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>
 <body>
 	<div id="header"><h1>Go Philly</h1>
 		<form div="search">
-			Starting Point:<br>
-			<input type="text" name="firstname">
+			Starting Location:<br>
+			<input type="text" name="">
 			<br>
 			Destination:<br>
-			<input type="text" name="lastname">
-			<br><button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
+			<input type="text" name="">
 		</form>
+		<br><button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
 	</div>
-	<div id="footer">Copyright © the Hans and Hers</div>
+	<div id="footer">Copyright the Hans and Hers</div>
+	<script>
+	$(document).ready(function () {
+		$('#searchButton').click(function () {
+			console.log('hello');
+			$.ajax({
+				type: "GET",
+				url: "https://api.lyft.com/v1/cost?start_lat=37.7833&start_lng=-122.4167&end_lat=40&end_lng=-80",
+				dataType: "json",
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader("Authorization", "Bearer " + 'gAAAAABWyL8F5kJFnpssm5TKqtQc76E0_P2uytuDUZeFty4qVVFx4rYltDWxZ2vxuiLnTlqNGUEAqQuSAnl1vVYIZDKLvpAK29cc5qFoDJAJ0eEMTgjx9Qtho6OVNSrsT-BYq__I4yAN14qUpVKcFg1v8dTcjTbAOiPGkEiVmSiIV94xKbCn6UdRBk107IFMzvQRvU7QGubbNCkM8FvQwtAmCqEA3jZhxA==');
+				},
+				success: function(data) {
+					alert(JSON.stringify(data));
+				},
+				error: function() {
+					alert("cannot get data");
+				}
+			});
+			// $.ajax({
+			// 	type: "POST",
+			// 	url: 'https://api.lyft.com/oauth/token',
+			// 	dataType: 'json',
+			// 	data: {"grant_type": "client_credentials", "scope": "public"},
+			// 	beforeSend: function (xhr) {
+			// 		xhr.setRequestHeader("Content-Type", "application/json");
+			// 		xhr.setRequestHeader("Authentication", "Basic" + 'Yz1sj9rtSrD8:C2OBv_DzGT2Eqw5xnnOGJZgsAmIaGgXI');
+			// 	},
+			// 	success: function(data) {
+			// 		alert(JSON.stringify(data));
+			// 	},
+			// 	error: function() {
+			// 		alert("cannot get data");
+			// 	}
+			// });
+		})
+	});
+	</script>
 </body>
 </html>
