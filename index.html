@@ -30,7 +30,17 @@
 					xhr.setRequestHeader("Authorization", "Bearer " + 'gAAAAABWyL8F5kJFnpssm5TKqtQc76E0_P2uytuDUZeFty4qVVFx4rYltDWxZ2vxuiLnTlqNGUEAqQuSAnl1vVYIZDKLvpAK29cc5qFoDJAJ0eEMTgjx9Qtho6OVNSrsT-BYq__I4yAN14qUpVKcFg1v8dTcjTbAOiPGkEiVmSiIV94xKbCn6UdRBk107IFMzvQRvU7QGubbNCkM8FvQwtAmCqEA3jZhxA==');
 				},
 				success: function(data) {
-					alert(JSON.stringify(data));
+					var json =JSON.stringify(data);
+					var obj = jQuery.parseJSON(json); 
+					// console.log(obj.cost_estimates[2]);
+					console.log("heyo");
+					if (obj.cost_estimates[2].ride_type === "lyft") {
+						console.log("what up");
+						alert( obj.cost_estimates[2].estimated_cost_cents_min );
+						var mincost = obj.cost_estimates[2].estimated_cost_cents_min;
+
+					}
+					// alert(JSON.stringify(data));
 				},
 				error: function() {
 					alert("cannot get data");
@@ -55,5 +65,9 @@
 		})
 	});
 	</script>
+
+	<script>	
+	</script>
+
 </body>
 </html>
