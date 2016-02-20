@@ -7,7 +7,11 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>
 <body>
-	<div id="header"><h1>Go Philly</h1>
+
+	<div id="header">
+		<div id="owl"><img src="goOwl.png" height=100px></div>
+		<h1>Go Philly</h1>
+
 		<form div="search">
 			Starting Location:<br>
 			<input type="text" name="">
@@ -16,9 +20,16 @@
 			<input type="text" name="">
 		</form>
 		<br><button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
+		<br>
+		<br>
+		<center>
+			<textarea rows="4" cols="50" id="output"></textarea>
+		</center>
 	</div>
+	
 	<div id="footer">Copyright the Hans and Hers</div>
 	<script>
+	var mincost = 0;
 	$(document).ready(function () {
 		$('#searchButton').click(function () {
 			console.log('hello');
@@ -37,7 +48,9 @@
 					if (obj.cost_estimates[2].ride_type === "lyft") {
 						console.log("what up");
 						alert( obj.cost_estimates[2].estimated_cost_cents_min );
-						var mincost = obj.cost_estimates[2].estimated_cost_cents_min;
+						mincost = obj.cost_estimates[2].estimated_cost_cents_min;
+
+						document.getElementById("output").value = mincost;
 
 					}
 					// alert(JSON.stringify(data));
@@ -46,6 +59,7 @@
 					alert("cannot get data");
 				}
 			});
+
 			// $.ajax({
 			// 	type: "POST",
 			// 	url: 'https://api.lyft.com/oauth/token',
@@ -68,6 +82,5 @@
 
 	<script>	
 	</script>
-
 </body>
 </html>
