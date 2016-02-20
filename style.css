@@ -1,7 +1,9 @@
 #header {
     background-color:pink;
     opacity: 0.9;
-    color:white;
-    text-align:center;
-    padding:5px;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    height: 400px;
+    padding-top: 300px;
 }
