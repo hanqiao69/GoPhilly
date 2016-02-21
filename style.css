@@ -11,10 +11,18 @@ textarea {
    resize: none;
 }
 #owl {
-	position: absolute;
-	top: 40%;
-	left: 40%;
+	position: relative;
+	top: 170px;
+	left: -140px;
 }
 body {
 	background: owl.png;
+}
+#philly {
+	position: relative;
+	top: 100px;
+}
+#textPlace {
+	position: relative;
+	top: -250px;
 }
