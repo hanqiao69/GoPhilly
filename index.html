@@ -7,73 +7,115 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwfHqSrAdndSlnD3DArI_4jgoND6PArY"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 </head>
-<body>
+<body onload="initialize()">
 
 	<div id="header">
 
+			
 		<div id="textPlace">
 			<div id="owl"><img src="goOwl.png" height=100px></div>
 			<h1>Go Philly</h1>
 			<form div="search">
 				Starting Location:<br>
-				<input type="text" name="">
+				<input type="textbox" id="address1" name="">
 				<br>
 				Destination:<br>
-				<input type="text" name="">
+				<input type="textbox" id="address2" name="">
 			</form>
-			<br><button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Search</button>
+			<br><button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="codeAddress()">Search</button>
 			<br>
 			<br>
 			<center>
 				<textarea rows="4" cols="50" id="output"></textarea>
+				<div id="map" style="width: 320px; height: 480px;"></div>
 			</center>
 		</div>
 	</div>
 	
 	<div id="footer">Copyright the Hans and Hers</div>
 	<script>
-	var mincost = 0;
-	$(document).ready(function () {
-		$('#searchButton').click(function () {
-			getLatLng();
-			$.ajax({
-				type: "GET",
-				url: "https://api.lyft.com/v1/cost?start_lat=37.7833&start_lng=-122.4167&end_lat=40&end_lng=-80",
-				dataType: "json",
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader("Authorization", "Bearer " + 'gAAAAABWyL8F5kJFnpssm5TKqtQc76E0_P2uytuDUZeFty4qVVFx4rYltDWxZ2vxuiLnTlqNGUEAqQuSAnl1vVYIZDKLvpAK29cc5qFoDJAJ0eEMTgjx9Qtho6OVNSrsT-BYq__I4yAN14qUpVKcFg1v8dTcjTbAOiPGkEiVmSiIV94xKbCn6UdRBk107IFMzvQRvU7QGubbNCkM8FvQwtAmCqEA3jZhxA==');
-				},
-				success: function(data) {
-					var json =JSON.stringify(data);
-					var obj = jQuery.parseJSON(json); 
-					// console.log(obj.cost_estimates[2]);
-					console.log("heyo");
-					if (obj.cost_estimates[2].ride_type === "lyft") {
-						console.log("what up");
-						alert( obj.cost_estimates[2].estimated_cost_cents_min );
-						mincost = obj.cost_estimates[2].estimated_cost_cents_min;
+	var geocoder;
+	var geocoder;
+	var map;
+	var result1 = "";
+	var result2 = "";
+	function initialize() {
+	    geocoder = new google.maps.Geocoder();
+	    var latlng = new google.maps.LatLng(-34.397, 150.644);
+	    var mapOptions = {
+		    zoom: 8,
+	    	center: latlng
+	    }
+	    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+	}
+	function codeAddress() {
+	    var address1 = document.getElementById("address1").value;
+	    var address2 = document.getElementById("address2").value;
+	    geocoder.geocode( { 'address': address1}, function(results, status) {
+	    if (status == google.maps.GeocoderStatus.OK) {
+	        map.setCenter(results[0].geometry.location);
+	        var marker = new google.maps.Marker({
+	            map: map,
+	            position: results[0].geometry.location
+	        });
+	        result1=results[0].geometry.location;
+	    } else {
+	        alert("Geocode was not successful for the following reason: " + status);
+	    }
+	    });
+	    geocoder.geocode( { 'address': address2}, function(results, status) {
+	    if (status == google.maps.GeocoderStatus.OK) {
+	        map.setCenter(results[0].geometry.location);
+	        var marker = new google.maps.Marker({
+	            map: map,
+	            position: results[0].geometry.location
+	        });
+	        result2=results[0].geometry.location;
+	    } else {
+	        alert("Geocode was not successful for the following reason: " + status);
+	    }
+	    });
+	    if (result1 != null) {
+	    	//alert("result" + result1.lat() + " " + result1.lng());
+	    }
+	    if (result1 != null) {
+		$("#output").val('');
 
-						document.getElementById("output").value = mincost;
+		var urlString = "https://api.lyft.com/v1/cost";
+		var dict = {start_lat: result1.lat(), start_lng: result1.lng(), end_lat: result2.lat(), end_lng: result2.lng()};
+		console.log(urlString);
+		var mincost = 0;
 
+		$.ajax({
+					type: "GET",
+					url: urlString,
+					data: dict,
+					dataType: "json",
+					headers: {"Authorization": "Bearer gAAAAABWyL8F5kJFnpssm5TKqtQc76E0_P2uytuDUZeFty4qVVFx4rYltDWxZ2vxuiLnTlqNGUEAqQuSAnl1vVYIZDKLvpAK29cc5qFoDJAJ0eEMTgjx9Qtho6OVNSrsT-BYq__I4yAN14qUpVKcFg1v8dTcjTbAOiPGkEiVmSiIV94xKbCn6UdRBk107IFMzvQRvU7QGubbNCkM8FvQwtAmCqEA3jZhxA=="}
+					,
+					success: function(data) {
+						var json =JSON.stringify(data);
+						var obj = jQuery.parseJSON(json); 
+						// console.log(obj.cost_estimates[2]);
+						if (obj.cost_estimates[2].ride_type === "lyft") {
+							alert( obj.cost_estimates[2].estimated_cost_cents_min );
+							mincost = obj.cost_estimates[2].estimated_cost_cents_min;
+							var dollar = mincost / 100;
+							var cents = mincost - dollar;
+							document.getElementById("output").value = "Cost of this ride will be about $" + dollar;
+
+						}
+						// alert(JSON.stringify(data));
+					},
+					error: function() {
+						alert("cannot get data");
 					}
-					// alert(JSON.stringify(data));
-				},
-				error: function() {
-					alert("cannot get data");
-				}
-			});
-})
-});
-</script>
-<script>
-function getLatLng(location_name) {
-	var geocoder = new google.maps.Geocoder;
-	var location;
-	geocoder.geocode({'address': address}, function(results) {
-		location = results[0].geometry.location;
-		console.log(location);
-	});
-}
+				});
+
+	}
+	}
+
+	
 </script>
 </body>
 </html>
