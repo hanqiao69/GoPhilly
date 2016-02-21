@@ -14,7 +14,7 @@
 			
 		<div id="textPlace">
 			<div id="owl"><img src="goOwl.png" height=100px></div>
-			<h1>Go Philly</h1>
+			<h1>GoPhilly</h1>
 			<form div="search">
 				Starting Location:<br>
 				<input type="textbox" id="address1" name="">
@@ -85,6 +85,7 @@
 		var dict = {start_lat: result1.lat(), start_lng: result1.lng(), end_lat: result2.lat(), end_lng: result2.lng()};
 		console.log(urlString);
 		var mincost = 0;
+		var time = 0;
 
 		$.ajax({
 					type: "GET",
@@ -98,11 +99,13 @@
 						var obj = jQuery.parseJSON(json); 
 						// console.log(obj.cost_estimates[2]);
 						if (obj.cost_estimates[2].ride_type === "lyft") {
-							alert( obj.cost_estimates[2].estimated_cost_cents_min );
 							mincost = obj.cost_estimates[2].estimated_cost_cents_min;
+							time = obj.cost_estimates[2].estimated_duration_seconds;
 							var dollar = mincost / 100;
 							var cents = mincost - dollar;
-							document.getElementById("output").value = "Cost of this ride will be about $" + dollar;
+							var hour = parseInt((time / 60));
+							var min = ((time / 60) - time) * 60;
+							document.getElementById("output").value = "Cost of this ride will be about $" + dollar + ". The time it will take is about " + hour + " minutes.";
 
 						}
 						// alert(JSON.stringify(data));
